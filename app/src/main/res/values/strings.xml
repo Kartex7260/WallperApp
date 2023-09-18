@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Wallper App</string>
+
+<!--  Retrofit data's  -->
+    <string name="imgur_link" translatable="false">https://api.imgur.com/3/</string>
+    <string name="imgur_client_id" translatable="false">7f001619d3640ad</string>
 </resources>

@@ -56,9 +56,11 @@ dependencies {
 	implementation("androidx.recyclerview:recyclerview:1.3.1")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+	implementation("androidx.preference:preference-ktx:1.2.1")
+
 	implementation("com.squareup.retrofit2:retrofit:2.9.0")
 	implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-	implementation("androidx.preference:preference-ktx:1.2.1")
+	implementation("io.coil-kt:coil:2.4.0")
 
 	implementation("com.google.dagger:hilt-android:2.48")
 	kapt("com.google.dagger:hilt-android-compiler:2.48")

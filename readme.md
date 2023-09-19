@@ -10,3 +10,4 @@
 * RecyclerView
 * MVVM
 * Preference API
+* Coil

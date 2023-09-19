@@ -1,14 +1,14 @@
 package kanti.wallperapp.data.retrofit
 
 data class TagItemsDTO(
-	val items: List<TagItemPOJO>
+	val items: List<TagItemDTO>
 )
 
-data class TagItemPOJO(
-	val images: List<ItemImagePOJO>
+data class TagItemDTO(
+	val images: List<ItemImageDTO>
 )
 
-data class ItemImagePOJO(
+data class ItemImageDTO(
 	val id: String,
 	val link: String
 )

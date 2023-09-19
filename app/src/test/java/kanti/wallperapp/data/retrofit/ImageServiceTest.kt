@@ -40,7 +40,7 @@ class ImageServiceTest {
 		val allTagsCall = imageService.getAllTags()
 		val allTagsResponse = allTagsCall.execute()
 
-		val isSuccess = allTagsResponse.body()?.success ?: false
+		val isSuccess = allTagsResponse.body()?.isSuccessful ?: false
 		Assert.assertTrue("Success", isSuccess)
 		val isNotNull = allTagsResponse.body()?.data != null
 		Assert.assertTrue("Data null", isNotNull)
@@ -55,7 +55,7 @@ class ImageServiceTest {
 		val tagImagesIdCall = imageService.getTagImagesId(tagName)
 		val tagImagesIdResponse = tagImagesIdCall.execute()
 
-		val isSuccess = tagImagesIdResponse.body()?.success ?: false
+		val isSuccess = tagImagesIdResponse.body()?.isSuccessful ?: false
 		Assert.assertTrue("Success", isSuccess)
 		val isNotNull = tagImagesIdResponse.body()?.data != null
 		Assert.assertTrue("Data is null", isNotNull)

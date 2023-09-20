@@ -1,24 +1,17 @@
 package kanti.wallperapp.di
 
 import android.content.Context
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kanti.wallperapp.R
-import kanti.wallperapp.data.ImageRemoteDataSource
-import kanti.wallperapp.data.ImageRetrofitDataSource
-import kanti.wallperapp.data.TagsRemoteDataSource
-import kanti.wallperapp.data.TagsRetrofitDataSource
 import kanti.wallperapp.data.retrofit.ImageService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Headers
 import javax.inject.Singleton
 
 @Module

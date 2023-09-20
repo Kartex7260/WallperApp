@@ -7,9 +7,9 @@ import retrofit2.http.Path
 interface ImageService {
 
 	@GET("tags")
-	fun getAllTags(): Call<DataResponse<TagsDTO>>
+	fun getAllTags(): Call<MetaData<TagsDTO>>
 
 	@GET("gallery/t/{tagName}")
-	fun getTagImagesId(@Path("tagName") tagName: String): Call<DataResponse<TagItemsDTO>>
+	fun getTagImagesId(@Path("tagName") tagName: String): Call<MetaData<TagItemsDTO>>
 
 }

@@ -4,10 +4,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
-import kanti.wallperapp.data.ImageRemoteDataSource
-import kanti.wallperapp.data.ImageRetrofitDataSource
-import kanti.wallperapp.data.TagsRemoteDataSource
-import kanti.wallperapp.data.TagsRetrofitDataSource
+import kanti.wallperapp.data.datasource.ImageRemoteDataSource
+import kanti.wallperapp.data.datasource.ImageRetrofitDataSource
+import kanti.wallperapp.data.datasource.TagsRemoteDataSource
+import kanti.wallperapp.data.datasource.TagsRetrofitDataSource
 
 @Module
 @InstallIn(ActivityComponent::class)

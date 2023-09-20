@@ -1,4 +1,4 @@
-package kanti.wallperapp.data
+package kanti.wallperapp.data.repositories
 
 import android.widget.ImageView
 import coil.load

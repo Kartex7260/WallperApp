@@ -1,8 +1,10 @@
-package kanti.wallperapp.data
+package kanti.wallperapp.data.datasource
 
-import kanti.wallperapp.data.retrofit.DataResponse
+import kanti.wallperapp.data.repositories.Tag
 import kanti.wallperapp.data.retrofit.ImageService
+import kanti.wallperapp.data.retrofit.MetaData
 import kanti.wallperapp.data.retrofit.TagsDTO
+import kanti.wallperapp.data.retrofit.toDataSourceResult
 import kanti.wallperapp.di.DispatcherIO
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
@@ -14,21 +16,17 @@ class TagsRetrofitDataSource @Inject constructor(
 	@DispatcherIO private val coroutineContext: CoroutineContext
 ) : TagsRemoteDataSource {
 
-	override suspend fun getTags(): DataResponse<List<Tag>> {
+	override suspend fun getTags(): RemoteDataResult<List<Tag>> {
 		val tagsCall = imageService.getAllTags()
 		val tagsResponse = withContext(coroutineContext) { tagsCall.awaitResponse() }
-		return DataResponse(
-			tagsResponse.isSuccessful,
-			tagsResponse.code(),
-			tagsResponse.body().convertToTagList()
-		)
+		return tagsResponse.toDataSourceResult(::tagsDtoToTagList)
 	}
 
-	private fun DataResponse<TagsDTO>?.convertToTagList(): List<Tag>? {
-		if (this == null || data == null)
+	private fun tagsDtoToTagList(metaData: MetaData<TagsDTO>?): List<Tag>? {
+		if (metaData?.data == null)
 			return null
-		return data.tags.map { tagDTO ->
-			Tag(tagDTO.name, tagDTO.displayName)
+		return metaData.data.tags.map { tagDto ->
+			Tag(tagDto.name, tagDto.displayName)
 		}
 	}
 

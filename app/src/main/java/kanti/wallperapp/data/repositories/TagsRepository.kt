@@ -1,8 +1,7 @@
 package kanti.wallperapp.data.repositories
 
-import kanti.wallperapp.data.Tag
-import kanti.wallperapp.data.TagsRemoteDataSource
-import kanti.wallperapp.data.retrofit.DataResponse
+import kanti.wallperapp.data.datasource.TagsRemoteDataSource
+import kanti.wallperapp.data.datasource.toRepositoryResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,8 +10,9 @@ class TagsRepository @Inject constructor(
 	private val tagsRemote: TagsRemoteDataSource
 ) {
 
-	suspend fun getTags(): DataResponse<List<Tag>> {
-		return tagsRemote.getTags()
+	suspend fun getTags(): RepositoryResult<List<Tag>> {
+		val tags = tagsRemote.getTags()
+		return tags.toRepositoryResult()
 	}
 
 }

@@ -3,13 +3,13 @@ package kanti.wallperapp.di
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ServiceComponent
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Qualifier
 import kotlin.coroutines.CoroutineContext
 
 @Module
-@InstallIn(ServiceComponent::class)
+@InstallIn(SingletonComponent::class)
 class CoroutineModule {
 
 	@DispatcherIO

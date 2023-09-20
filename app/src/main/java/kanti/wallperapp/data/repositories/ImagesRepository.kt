@@ -3,7 +3,9 @@ package kanti.wallperapp.data.repositories
 import kanti.wallperapp.data.datasource.ImageRemoteDataSource
 import kanti.wallperapp.data.datasource.toRepositoryResult
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ImagesRepository @Inject constructor(
 	private val imageRemote: ImageRemoteDataSource
 ) {

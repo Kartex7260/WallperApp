@@ -1,5 +1,6 @@
 package kanti.wallperapp.data.datasource
 
+import android.util.Log
 import kanti.wallperapp.data.repositories.Tag
 import kanti.wallperapp.data.retrofit.ImageService
 import kanti.wallperapp.data.retrofit.MetaData
@@ -16,10 +17,17 @@ class TagsRetrofitDataSource @Inject constructor(
 	@DispatcherIO private val coroutineContext: CoroutineContext
 ) : TagsRemoteDataSource {
 
+	private val logTag = "ImageRetrofitService"
+
 	override suspend fun getTags(): RemoteDataResult<List<Tag>> {
 		val tagsCall = imageService.getAllTags()
-		val tagsResponse = withContext(coroutineContext) { tagsCall.awaitResponse() }
-		return tagsResponse.toDataSourceResult(::tagsDtoToTagList)
+		try {
+			val tagsResponse = withContext(coroutineContext) { tagsCall.awaitResponse() }
+			return tagsResponse.toDataSourceResult(::tagsDtoToTagList)
+		} catch (ex: Exception) {
+			Log.i(logTag, ex.message, ex)
+		}
+		return RemoteDataResult(resultType = RemoteDataResultType.NotConnection)
 	}
 
 	private fun tagsDtoToTagList(metaData: MetaData<TagsDTO>?): List<Tag>? {

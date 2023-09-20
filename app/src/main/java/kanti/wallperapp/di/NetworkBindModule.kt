@@ -3,14 +3,14 @@ package kanti.wallperapp.di
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
 import kanti.wallperapp.data.datasource.ImageRemoteDataSource
 import kanti.wallperapp.data.datasource.ImageRetrofitDataSource
 import kanti.wallperapp.data.datasource.TagsRemoteDataSource
 import kanti.wallperapp.data.datasource.TagsRetrofitDataSource
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 abstract class NetworkBindModule {
 
 	@Binds

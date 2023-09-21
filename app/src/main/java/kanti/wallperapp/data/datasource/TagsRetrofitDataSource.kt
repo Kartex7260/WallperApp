@@ -6,28 +6,32 @@ import kanti.wallperapp.data.retrofit.ImageService
 import kanti.wallperapp.data.retrofit.MetaData
 import kanti.wallperapp.data.retrofit.TagsDTO
 import kanti.wallperapp.data.retrofit.toDataSourceResult
-import kanti.wallperapp.di.DispatcherIO
-import kotlinx.coroutines.withContext
+import kanti.wallperapp.net.NoConnectivityException
+import kotlinx.coroutines.CancellationException
 import retrofit2.awaitResponse
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class TagsRetrofitDataSource @Inject constructor(
-	private val imageService: ImageService,
-	@DispatcherIO private val coroutineContext: CoroutineContext
+	private val imageService: ImageService
 ) : TagsRemoteDataSource {
 
-	private val logTag = "ImageRetrofitService"
+	private val logTag = "TagsRetrofitService"
 
 	override suspend fun getTags(): RemoteDataResult<List<Tag>> {
+		Log.d(logTag, "getTags()")
 		val tagsCall = imageService.getAllTags()
-		try {
-			val tagsResponse = withContext(coroutineContext) { tagsCall.awaitResponse() }
-			return tagsResponse.toDataSourceResult(::tagsDtoToTagList)
+		return try {
+			val tagsResponse = tagsCall.awaitResponse()
+			tagsResponse.toDataSourceResult(::tagsDtoToTagList)
+		} catch (ex: NoConnectivityException) {
+			Log.i(logTag, ex.message, ex)
+			RemoteDataResult(resultType = RemoteDataResultType.NotConnection)
 		} catch (ex: Exception) {
 			Log.i(logTag, ex.message, ex)
+			RemoteDataResult(resultType = RemoteDataResultType.Fail)
+		} catch (ex: CancellationException) {
+			throw ex
 		}
-		return RemoteDataResult(resultType = RemoteDataResultType.NotConnection)
 	}
 
 	private fun tagsDtoToTagList(metaData: MetaData<TagsDTO>?): List<Tag>? {

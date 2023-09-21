@@ -8,6 +8,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kanti.wallperapp.R
 import kanti.wallperapp.data.retrofit.ImageService
+import kanti.wallperapp.net.NoConnectivityException
+import kanti.wallperapp.net.isConnection
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -18,19 +20,40 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
+	@AuthorizationHeadInterceptor
 	@Provides
-	@Singleton
-	fun provideRetrofit(@ApplicationContext context: Context): Retrofit {
+	fun provideAuthorizationInterceptor(@ApplicationContext context: Context): Interceptor {
 		val clientId = context.getString(R.string.imgur_client_id)
-		val interceptor = Interceptor { chain ->
+		return Interceptor { chain ->
 			val newRequest = chain.request().newBuilder()
 				.addHeader("Authorization", "Client-ID $clientId")
 				.build()
 			chain.proceed(newRequest)
 		}
+	}
 
+	@NoConnectionInterceptor
+	@Provides
+	fun provideNoConnectionInterceptor(@ApplicationContext context: Context): Interceptor {
+		return Interceptor { chain ->
+			if (context.isConnection) {
+				chain.proceed(chain.request())
+			} else {
+				throw NoConnectivityException()
+			}
+		}
+	}
+
+	@Provides
+	@Singleton
+	fun provideRetrofit(
+		@ApplicationContext context: Context,
+		@AuthorizationHeadInterceptor authInterceptor: Interceptor,
+		@NoConnectionInterceptor noConnectionInterceptor: Interceptor
+	): Retrofit {
 		val client = OkHttpClient.Builder()
-			.addInterceptor(interceptor)
+			.addInterceptor(authInterceptor)
+			.addInterceptor(noConnectionInterceptor)
 			.build()
 
 		return Retrofit.Builder()

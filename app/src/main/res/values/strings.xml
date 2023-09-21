@@ -5,7 +5,7 @@
     <string name="activity_main_error_connection">There is no network connection!</string>
     <string name="activity_main_unexpected_error">Unexpected error!</string>
 
-<!--  Retrofit data's  -->
+    <!--  Retrofit data's  -->
     <string name="imgur_link" translatable="false">https://api.imgur.com/3/</string>
     <string name="imgur_client_id" translatable="false">7f001619d3640ad</string>
 </resources>

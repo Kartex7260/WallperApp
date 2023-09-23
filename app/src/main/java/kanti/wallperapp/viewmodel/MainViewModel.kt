@@ -18,6 +18,7 @@ class MainViewModel @Inject constructor(
 	val tagsLiveData: LiveData<TagsUiState> = _tagsLiveData
 
 	fun getTags() {
+		_tagsLiveData.value = TagsUiState(process = true)
 		viewModelScope.launch {
 			val tags = tagsRepository.getTags()
 			_tagsLiveData.postValue(TagsUiState(tags))

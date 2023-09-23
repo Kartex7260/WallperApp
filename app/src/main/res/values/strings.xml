@@ -17,4 +17,8 @@
     <!--  Retrofit data's  -->
     <string name="imgur_link" translatable="false">https://api.imgur.com/3/</string>
     <string name="imgur_client_id" translatable="false">7f001619d3640ad</string>
+
+    <!--  Option menu  -->
+    <string name="menu_option_refresh">Refresh</string>
+    <string name="menu_main_option_settings">Settings</string>
 </resources>

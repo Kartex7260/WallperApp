@@ -1,12 +1,15 @@
 package kanti.wallperapp
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kanti.wallperapp.data.repositories.RepositoryResultType
 import kanti.wallperapp.data.model.Tag
+import kanti.wallperapp.data.repositories.RepositoryResultType
 import kanti.wallperapp.databinding.ActivityMainBinding
 import kanti.wallperapp.view.TagsRecyclerAdapter
 import kanti.wallperapp.viewmodel.MainViewModel
@@ -25,21 +28,48 @@ class MainActivity : AppCompatActivity() {
 		title = getString(R.string.activity_main_title)
 
 		viewModel.tagsLiveData.observe(this) { tagsUiState ->
-			view.recyclerViewImages.removeAllViews()
+			if (tagsUiState.process || tagsUiState.tags == null) {
+				view.recyclerViewImages.adapter = null
+				view.progressBarMain.visibility = View.VISIBLE
+				return@observe
+			}
+
+			view.progressBarMain.visibility = View.INVISIBLE
+			view.recyclerViewImages.adapter = TagsRecyclerAdapter(
+				tagsUiState.tags.data ?: listOf(),
+				::onClickTagItem
+			)
+
 			when (tagsUiState.tags.resultType) {
-				RepositoryResultType.Success -> {
-					val tagListRecyclerAdapter = TagsRecyclerAdapter(tagsUiState.tags.data ?: listOf(), ::onClickTagItem)
-					view.recyclerViewImages.adapter = tagListRecyclerAdapter
-				}
 				RepositoryResultType.NotConnection -> {
 					Toast.makeText(this, R.string.net_error_connection, Toast.LENGTH_SHORT).show()
 				}
 				RepositoryResultType.Fail -> {
 					Toast.makeText(this, R.string.net_unexpected_error, Toast.LENGTH_SHORT).show()
 				}
+				else -> {}
 			}
 		}
 		viewModel.getTags()
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		menuInflater.inflate(R.menu.menu_main_option, menu)
+		return true
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId) {
+		R.id.menu_main_option_refresh -> {
+			viewModel.getTags()
+			true
+		}
+		R.id.menu_main_option_settings -> {
+
+			true
+		}
+		else -> {
+			super.onOptionsItemSelected(item)
+		}
 	}
 
 	private fun onClickTagItem(tag: Tag) {

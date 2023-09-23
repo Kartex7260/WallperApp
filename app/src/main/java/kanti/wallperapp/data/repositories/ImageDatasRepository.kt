@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ImageLinksRepository @Inject constructor(
+class ImageDatasRepository @Inject constructor(
 	private val imageRemote: ImageLinksRemoteDataSource
 ) {
 

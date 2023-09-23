@@ -7,9 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kanti.wallperapp.R
+import kanti.wallperapp.data.retrofit.ConnectionService
 import kanti.wallperapp.data.retrofit.ImageService
-import kanti.wallperapp.net.NoConnectivityException
-import kanti.wallperapp.net.isConnection
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -32,28 +31,14 @@ class NetworkModule {
 		}
 	}
 
-	@NoConnectionInterceptor
-	@Provides
-	fun provideNoConnectionInterceptor(@ApplicationContext context: Context): Interceptor {
-		return Interceptor { chain ->
-			if (context.isConnection) {
-				chain.proceed(chain.request())
-			} else {
-				throw NoConnectivityException()
-			}
-		}
-	}
-
 	@Provides
 	@Singleton
 	fun provideRetrofit(
 		@ApplicationContext context: Context,
-		@AuthorizationHeadInterceptor authInterceptor: Interceptor,
-		@NoConnectionInterceptor noConnectionInterceptor: Interceptor
+		@AuthorizationHeadInterceptor authInterceptor: Interceptor
 	): Retrofit {
 		val client = OkHttpClient.Builder()
 			.addInterceptor(authInterceptor)
-			.addInterceptor(noConnectionInterceptor)
 			.build()
 
 		return Retrofit.Builder()
@@ -67,5 +52,10 @@ class NetworkModule {
 	@Singleton
 	fun provideImageService(retrofit: Retrofit): ImageService =
 		retrofit.create(ImageService::class.java)
+
+	@Provides
+	@Singleton
+	fun provideConnectionService(retrofit: Retrofit): ConnectionService =
+		retrofit.create(ConnectionService::class.java)
 
 }

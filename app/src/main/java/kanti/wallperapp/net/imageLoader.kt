@@ -21,6 +21,7 @@ fun Context.imageRequestBuilder(
 		.memoryCacheKey(imageData.link)
 		.target(imageView)
 		.fallback(R.drawable.outline_image_not_supported_24)
+		.error(R.drawable.outline_image_not_supported_24)
 		.placeholder(R.drawable.outline_image_24)
 }
 

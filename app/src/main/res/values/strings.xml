@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Wallper App</string>
 
-    <!--  Activity's strings  -->
+    <!--  Main activity strings  -->
     <string name="activity_main_title">Tags</string>
+
+    <!--  Wallpaper ser activity strings  -->
+    <string name="activity_wallpaper_set_button_set">Set as wallpaper</string>
 
     <!--  Net error's  -->
     <string name="net_error_connection">There is no network connection!</string>

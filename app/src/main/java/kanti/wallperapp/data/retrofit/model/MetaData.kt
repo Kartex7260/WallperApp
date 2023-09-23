@@ -1,4 +1,4 @@
-package kanti.wallperapp.data.retrofit
+package kanti.wallperapp.data.retrofit.model
 
 data class MetaData<T>(
 	val isSuccessful: Boolean,

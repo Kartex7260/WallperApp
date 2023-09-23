@@ -5,12 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import kanti.wallperapp.data.model.ImageLink
+import kanti.wallperapp.data.model.ImageData
 
 class ImagesRecyclerAdapter(
-	private val imageLinks: List<ImageLink>,
-	private val onClick: (ImageLink) -> Unit,
-	private val onBindImage: (ImageView, ImageLink) -> Unit
+	private val imageDatas: List<ImageData>,
+	private val onClick: (ImageData) -> Unit,
+	private val onBindImage: (ImageView, ImageData) -> Unit
 ) : RecyclerView.Adapter<ImagesRecyclerAdapter.ImageViewHolder>() {
 
 	class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -39,11 +39,11 @@ class ImagesRecyclerAdapter(
 	}
 
 	override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-		val image = imageLinks[position]
+		val image = imageDatas[position]
 		onBindImage(holder.imageView, image)
 		holder.imageView.setOnClickListener { onClick(image) }
 	}
 
-	override fun getItemCount(): Int = imageLinks.size
+	override fun getItemCount(): Int = imageDatas.size
 
 }

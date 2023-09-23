@@ -1,10 +1,10 @@
 package kanti.wallperapp.data.datasource
 
 import android.util.Log
-import kanti.wallperapp.data.model.ImageLink
+import kanti.wallperapp.data.model.ImageData
 import kanti.wallperapp.data.retrofit.ImageService
-import kanti.wallperapp.data.retrofit.MetaData
-import kanti.wallperapp.data.retrofit.TagItemsDTO
+import kanti.wallperapp.data.retrofit.model.MetaData
+import kanti.wallperapp.data.retrofit.model.TagItemsDTO
 import kanti.wallperapp.data.retrofit.toDataSourceResult
 import kanti.wallperapp.net.NoConnectivityException
 import kotlinx.coroutines.CancellationException
@@ -17,7 +17,7 @@ class ImageLinksRetrofitDataSource @Inject constructor(
 
 	private val logTag = "ImageRetrofitService"
 
-	override suspend fun getImages(tagName: String): RemoteDataResult<List<ImageLink>> {
+	override suspend fun getImages(tagName: String): RemoteDataResult<List<ImageData>> {
 		Log.d(logTag, "getImages(\"$tagName\")")
 		val tagImagesIdCall = imageService.getTagImagesId(tagName)
 		return try {
@@ -34,12 +34,12 @@ class ImageLinksRetrofitDataSource @Inject constructor(
 		}
 	}
 
-	private fun tagItemsDtoToTagList(metaData: MetaData<TagItemsDTO>?): List<ImageLink>? {
+	private fun tagItemsDtoToTagList(metaData: MetaData<TagItemsDTO>?): List<ImageData>? {
 		if (metaData?.data == null)
 			return null
 		return metaData.data.items.flatMap { tagItem ->
 			tagItem.images?.map { itemImage ->
-				ImageLink(itemImage.link)
+				ImageData(tagItem.title, itemImage.link)
 			} ?: listOf()
 		}
 	}

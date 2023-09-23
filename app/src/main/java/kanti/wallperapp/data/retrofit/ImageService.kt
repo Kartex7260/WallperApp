@@ -1,5 +1,8 @@
 package kanti.wallperapp.data.retrofit
 
+import kanti.wallperapp.data.retrofit.model.MetaData
+import kanti.wallperapp.data.retrofit.model.TagItemsDTO
+import kanti.wallperapp.data.retrofit.model.TagsDTO
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

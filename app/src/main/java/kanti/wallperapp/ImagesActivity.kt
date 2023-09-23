@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.imageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import kanti.wallperapp.data.model.ImageLink
+import kanti.wallperapp.data.model.ImageData
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.RepositoryResultType
 import kanti.wallperapp.databinding.ActivityImagesBinding
@@ -68,11 +68,12 @@ class ImagesActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun onClickRecyclerImage(imageLink: ImageLink) {
+	private fun onClickRecyclerImage(imageData: ImageData) {
+		WallpaperSetActivity.startActivity(this, imageData)
 	}
 
-	private fun onBindImage(imageView: ImageView, imageLink: ImageLink) {
-		val request = smallImageRequest(this, imageLink, imageView)
+	private fun onBindImage(imageView: ImageView, imageData: ImageData) {
+		val request = smallImageRequest(this, imageData, imageView)
 		imageLoader.enqueue(request)
 	}
 

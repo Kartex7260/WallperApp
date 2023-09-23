@@ -3,8 +3,8 @@ package kanti.wallperapp.data.datasource
 import android.util.Log
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.retrofit.ImageService
-import kanti.wallperapp.data.retrofit.MetaData
-import kanti.wallperapp.data.retrofit.TagsDTO
+import kanti.wallperapp.data.retrofit.model.MetaData
+import kanti.wallperapp.data.retrofit.model.TagsDTO
 import kanti.wallperapp.data.retrofit.toDataSourceResult
 import kanti.wallperapp.net.NoConnectivityException
 import kotlinx.coroutines.CancellationException

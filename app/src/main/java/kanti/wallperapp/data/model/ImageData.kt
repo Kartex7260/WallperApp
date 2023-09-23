@@ -1,5 +1,6 @@
 package kanti.wallperapp.data.model
 
-data class ImageLink(
+data class ImageData(
+	val title: String,
 	val link: String
 )

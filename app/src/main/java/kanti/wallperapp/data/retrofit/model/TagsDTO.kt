@@ -1,4 +1,4 @@
-package kanti.wallperapp.data.retrofit
+package kanti.wallperapp.data.retrofit.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kanti.wallperapp.R
-import kanti.wallperapp.data.repositories.Tag
+import kanti.wallperapp.data.model.Tag
 
-class TagListRecyclerAdapter(
+class TagsRecyclerAdapter(
 	private val tags: List<Tag>,
-	private val onClick: (String) -> Unit
-) : RecyclerView.Adapter<TagListRecyclerAdapter.TagViewHolder>() {
+	private val onClick: (Tag) -> Unit
+) : RecyclerView.Adapter<TagsRecyclerAdapter.TagViewHolder>() {
 
 	class TagViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -21,14 +21,14 @@ class TagListRecyclerAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
 		val layoutInflater = LayoutInflater.from(parent.context)
-		val view = layoutInflater.inflate(R.layout.tag_card_view, parent, false)
+		val view = layoutInflater.inflate(R.layout.view_tag_card, parent, false)
 		return TagViewHolder(view)
 	}
 
 	override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
 		val tag = tags[position]
 		holder.textViewTagDisplayName.text = tag.displayName
-		holder.itemView.setOnClickListener { onClick(tag.name) }
+		holder.itemView.setOnClickListener { onClick(tag) }
 	}
 
 	override fun getItemCount(): Int = tags.size

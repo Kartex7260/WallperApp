@@ -5,7 +5,7 @@ data class TagItemsDTO(
 )
 
 data class TagItemDTO(
-	val images: List<ItemImageDTO>
+	val images: List<ItemImageDTO>?
 )
 
 data class ItemImageDTO(

@@ -1,7 +1,7 @@
 package kanti.wallperapp.data.datasource
 
 import android.util.Log
-import kanti.wallperapp.data.repositories.Tag
+import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.retrofit.ImageService
 import kanti.wallperapp.data.retrofit.MetaData
 import kanti.wallperapp.data.retrofit.TagsDTO

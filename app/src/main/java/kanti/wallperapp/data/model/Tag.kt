@@ -1,4 +1,4 @@
-package kanti.wallperapp.data.repositories
+package kanti.wallperapp.data.model
 
 data class Tag(
 	val name: String,

@@ -4,8 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kanti.wallperapp.data.datasource.ImageRemoteDataSource
-import kanti.wallperapp.data.datasource.ImageRetrofitDataSource
+import kanti.wallperapp.data.datasource.ImageLinksRemoteDataSource
+import kanti.wallperapp.data.datasource.ImageLinksRetrofitDataSource
 import kanti.wallperapp.data.datasource.TagsRemoteDataSource
 import kanti.wallperapp.data.datasource.TagsRetrofitDataSource
 
@@ -14,7 +14,7 @@ import kanti.wallperapp.data.datasource.TagsRetrofitDataSource
 abstract class NetworkBindModule {
 
 	@Binds
-	abstract fun bindImageRemoteDataSource(imageRemote: ImageRetrofitDataSource): ImageRemoteDataSource
+	abstract fun bindImageRemoteDataSource(imageRemote: ImageLinksRetrofitDataSource): ImageLinksRemoteDataSource
 
 	@Binds
 	abstract fun bindTagsRemoteDataSource(tagsRemote: TagsRetrofitDataSource): TagsRemoteDataSource

@@ -9,5 +9,7 @@ val Context.isConnection: Boolean
 		connectivityManager.activeNetworkInfo?.also {
 			it.isConnected
 		}
-		return false
+		return true
+		TODO("Сделать проверку сети рабочей")
 	}
+

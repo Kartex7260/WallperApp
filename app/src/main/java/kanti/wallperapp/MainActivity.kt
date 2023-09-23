@@ -6,8 +6,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kanti.wallperapp.data.repositories.RepositoryResultType
+import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.databinding.ActivityMainBinding
-import kanti.wallperapp.view.TagListRecyclerAdapter
+import kanti.wallperapp.view.TagsRecyclerAdapter
 import kanti.wallperapp.viewmodel.MainViewModel
 
 @AndroidEntryPoint
@@ -27,21 +28,22 @@ class MainActivity : AppCompatActivity() {
 			view.recyclerViewImages.removeAllViews()
 			when (tagsUiState.tags.resultType) {
 				RepositoryResultType.Success -> {
-					val tagListRecyclerAdapter = TagListRecyclerAdapter(tagsUiState.tags.data!!, ::onClickTagItem)
+					val tagListRecyclerAdapter = TagsRecyclerAdapter(tagsUiState.tags.data ?: listOf(), ::onClickTagItem)
 					view.recyclerViewImages.adapter = tagListRecyclerAdapter
 				}
 				RepositoryResultType.NotConnection -> {
-					Toast.makeText(this, R.string.activity_main_error_connection, Toast.LENGTH_SHORT).show()
+					Toast.makeText(this, R.string.net_error_connection, Toast.LENGTH_SHORT).show()
 				}
 				RepositoryResultType.Fail -> {
-					Toast.makeText(this, R.string.activity_main_unexpected_error, Toast.LENGTH_SHORT).show()
+					Toast.makeText(this, R.string.net_unexpected_error, Toast.LENGTH_SHORT).show()
 				}
 			}
 		}
 		viewModel.getTags()
 	}
 
-	private fun onClickTagItem(tagName: String) {
+	private fun onClickTagItem(tag: Tag) {
+		ImagesActivity.startActivity(this, tag)
 	}
 
 }

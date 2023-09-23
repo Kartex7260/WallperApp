@@ -1,6 +1,6 @@
 package kanti.wallperapp.data.datasource
 
-import kanti.wallperapp.data.repositories.Tag
+import kanti.wallperapp.data.model.Tag
 
 interface TagsRemoteDataSource {
 

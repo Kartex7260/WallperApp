@@ -1,5 +1,6 @@
 package kanti.wallperapp.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +15,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
 	private val _tagsLiveData = MutableLiveData<TagsUiState>()
-	val tagsLiveData = _tagsLiveData
+	val tagsLiveData: LiveData<TagsUiState> = _tagsLiveData
 
 	fun getTags() {
 		viewModelScope.launch {

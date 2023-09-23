@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">Wallper App</string>
 
+    <!--  Activity's strings  -->
     <string name="activity_main_title">Tags</string>
-    <string name="activity_main_error_connection">There is no network connection!</string>
-    <string name="activity_main_unexpected_error">Unexpected error!</string>
+
+    <!--  Net error's  -->
+    <string name="net_error_connection">There is no network connection!</string>
+    <string name="net_unexpected_error">Unexpected error!</string>
+
+    <!--  View's strings  -->
+    <string name="view_image_content_description">Image</string>
 
     <!--  Retrofit data's  -->
     <string name="imgur_link" translatable="false">https://api.imgur.com/3/</string>

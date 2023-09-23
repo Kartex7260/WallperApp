@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import coil.ImageLoader
+import coil.imageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kanti.wallperapp.data.model.ImageLink
 import kanti.wallperapp.data.model.Tag
@@ -26,14 +26,10 @@ class ImagesActivity : AppCompatActivity() {
 	private lateinit var view: ActivityImagesBinding
 	private val viewModel: ImagesViewModel by viewModels()
 
-	private lateinit var imageLoader: ImageLoader
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		view = ActivityImagesBinding.inflate(layoutInflater)
 		setContentView(view.root)
-
-		imageLoader = ImageLoader(this)
 
 		view.recyclerViewImages.layoutManager = GridLayoutManager(this, columnCount)
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preference_entries">
+        <item>@string/preference_theme_light</item>
+        <item>@string/preference_theme_dark</item>
+        <item>@string/preference_theme_as_system</item>
+    </array>
+
+    <array name="preference_entries_value">
+        <item>@string/preference_theme_value_light</item>
+        <item>@string/preference_theme_value_dark</item>
+        <item>@string/preference_theme_value_as_system</item>
+    </array>
+
+</resources>

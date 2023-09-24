@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 			true
 		}
 		R.id.menu_main_option_settings -> {
-
+			SettingsActivity.startActivity(this)
 			true
 		}
 		else -> {

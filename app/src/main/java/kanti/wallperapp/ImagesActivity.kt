@@ -79,7 +79,7 @@ class ImagesActivity : AppCompatActivity() {
 	}
 
 	private fun onClickRecyclerImage(imageData: ImageData) {
-		WallpaperSetActivity.startActivity(this, imageData)
+		WallpaperInstallingActivity.startActivity(this, imageData)
 	}
 
 	private fun onBindImage(imageView: ImageView, imageData: ImageData) {

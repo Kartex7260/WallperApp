@@ -12,4 +12,10 @@
         <item>@string/preference_theme_value_as_system</item>
     </array>
 
+    <array name="dialog_wallpaper_set">
+        <item>@string/dialog_wallpaper_set_lock_screen</item>
+        <item>@string/dialog_wallpaper_set_main_screen</item>
+        <item>@string/dialog_wallpaper_set_both_screens</item>
+    </array>
+
 </resources>

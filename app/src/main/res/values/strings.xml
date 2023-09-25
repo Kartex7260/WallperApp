@@ -32,4 +32,13 @@
     <string name="preference_theme_value_dark">dark</string>
     <string name="preference_theme_value_as_system">as_system</string>
 
+    <!--  Dialog wallpaper installing  -->
+    <string name="dialog_wallpaper_set_lock_screen">To the lock screen</string>
+    <string name="dialog_wallpaper_set_main_screen">To the main screen</string>
+    <string name="dialog_wallpaper_set_both_screens">On both screens</string>
+    
+    <!--  Installing status  -->
+    <string name="wallpaper_install_success">Wallpaper successfully installed</string>
+    <string name="wallpaper_install_fail">Wallpaper failed to install</string>
+
 </resources>

@@ -9,6 +9,7 @@
 * MVVM
 * Preference API
 * Coil
+* Room
 
 ## 2. Технические особенности
 

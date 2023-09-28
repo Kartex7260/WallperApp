@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Wallper App</string>
 
+    <!--  Room database  -->
+    <string name="database_name" translatable="false">database-wallpaper-app</string>
+
     <!--  Main activity strings  -->
     <string name="activity_main_title">Tags</string>
 
@@ -23,14 +26,14 @@
     <string name="menu_main_option_settings">Settings</string>
 
     <!--  Preference  -->
-    <string name="preference_theme_key">dark_mode</string>
+    <string name="preference_theme_key" translatable="false">dark_mode</string>
     <string name="preference_theme">App theme</string>
     <string name="preference_theme_light">Light</string>
     <string name="preference_theme_dark">Dark</string>
     <string name="preference_theme_as_system">As is the system</string>
-    <string name="preference_theme_value_light">light</string>
-    <string name="preference_theme_value_dark">dark</string>
-    <string name="preference_theme_value_as_system">as_system</string>
+    <string name="preference_theme_value_light" translatable="false">light</string>
+    <string name="preference_theme_value_dark" translatable="false">dark</string>
+    <string name="preference_theme_value_as_system" translatable="false">as_system</string>
 
     <!--  Dialog wallpaper installing  -->
     <string name="dialog_wallpaper_set_lock_screen">To the lock screen</string>

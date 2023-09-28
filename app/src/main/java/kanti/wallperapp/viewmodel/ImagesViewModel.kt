@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kanti.wallperapp.data.repositories.ImageDatasRepository
+import kanti.wallperapp.data.repositories.ImageDataRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ImagesViewModel @Inject constructor(
-	private val imagesLinkRepository: ImageDatasRepository
+	private val imagesLinkRepository: ImageDataRepository
 ) : ViewModel() {
 
 	private val _imagesLinksLiveData: MutableLiveData<ImagesUiState> = MutableLiveData()

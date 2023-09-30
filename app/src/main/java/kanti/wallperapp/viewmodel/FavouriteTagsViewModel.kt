@@ -8,6 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.FavouriteTagsRepository
 import kanti.wallperapp.viewmodel.uistate.FavouriteTagsUiState
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,6 +38,21 @@ class FavouriteTagsViewModel @Inject constructor(
 				favouriteTags.delete(value)
 			}
 		}
+	}
+
+	fun updateFavouriteTag(tags: List<Tag>): LiveData<Int> {
+		val liveData = MutableLiveData<Int>()
+		viewModelScope.launch {
+			val tagsFlow = tags.asFlow()
+			tagsFlow.collectIndexed { index, tag ->
+				val isFavourite = favouriteTags.isFavourite(tag)
+				if (isFavourite != tag.favourite) {
+					tag.favourite = isFavourite
+					liveData.postValue(index)
+				}
+			}
+		}
+		return liveData
 	}
 
 }

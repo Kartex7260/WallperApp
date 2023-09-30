@@ -19,6 +19,8 @@ import kanti.wallperapp.data.repositories.RepositoryResultType
 import kanti.wallperapp.databinding.ActivityImagesBinding
 import kanti.wallperapp.net.smallImageRequest
 import kanti.wallperapp.view.ImagesRecyclerAdapter
+import kanti.wallperapp.viewmodel.FavouriteTagsViewModel
+import kanti.wallperapp.viewmodel.FavouriteViewModel
 import kanti.wallperapp.viewmodel.ImagesViewModel
 
 @AndroidEntryPoint
@@ -28,13 +30,21 @@ class ImagesActivity : AppCompatActivity() {
 
 	private lateinit var view: ActivityImagesBinding
 	private val viewModel: ImagesViewModel by viewModels()
+	private val favouriteViewModel: FavouriteTagsViewModel by viewModels()
 
-	private lateinit var tagName: String
+	private lateinit var tagHolder: TagHolder
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		view = ActivityImagesBinding.inflate(layoutInflater)
 		setContentView(view.root)
+
+		val tag = getTag()
+		if (tag == null) {
+			finish()
+			return
+		}
+		tagHolder = TagHolder(tag, favouriteViewModel)
 
 		view.recyclerViewImages.layoutManager = GridLayoutManager(this, columnCount)
 
@@ -71,11 +81,8 @@ class ImagesActivity : AppCompatActivity() {
 			}
 		}
 
-		title = intent.getStringExtra(EXTRA_TAG_DISPLAY_NAME)
-		intent.getStringExtra(EXTRA_TAG_NAME)?.also { tagName ->
-			this.tagName = tagName
-			viewModel.getImagesLinks(tagName)
-		}
+		title = tagHolder.tag.displayName
+		updateImages()
 	}
 
 	private fun onClickRecyclerImage(imageData: ImageData) {
@@ -88,17 +95,37 @@ class ImagesActivity : AppCompatActivity() {
 	}
 
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.menu_images_option, menu)
+		tagHolder.menuItem = menu.findItem(R.id.menu_images_option_star)
+		tagHolder.updateButton()
 		return true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.menu_images_option_refresh -> {
-			viewModel.getImagesLinks(tagName)
+			updateImages()
+			true
+		}
+		R.id.menu_images_option_star -> {
+			tagHolder.switchFavourite()
 			true
 		}
 		else -> { super.onOptionsItemSelected(item) }
+	}
+
+	private fun updateImages() {
+		viewModel.getImagesLinks(tagHolder.tag.name)
+	}
+
+	private fun getTag(): Tag? {
+		intent.run {
+			val name = getStringExtra(EXTRA_TAG_NAME) ?: return null
+			val displayName = getStringExtra(EXTRA_TAG_DISPLAY_NAME) ?: return null
+			val favourite = getBooleanExtra(EXTRA_TAG_FAVOURITE, false)
+			val position = getIntExtra(EXTRA_TAG_NAME, -1)
+			return Tag(name, displayName, favourite, position)
+		}
 	}
 
 
@@ -106,13 +133,43 @@ class ImagesActivity : AppCompatActivity() {
 
 		private const val EXTRA_TAG_NAME = "tagName"
 		private const val EXTRA_TAG_DISPLAY_NAME = "tagDisplayName"
+		private const val EXTRA_TAG_FAVOURITE = "tagFavourite"
+		private const val EXTRA_TAG_POSITION = "tagPosition"
 
 		fun startActivity(context: Context, tag: Tag) {
 			val intent = Intent(context, ImagesActivity::class.java)
 			intent.putExtra(EXTRA_TAG_NAME, tag.name)
 			intent.putExtra(EXTRA_TAG_DISPLAY_NAME, tag.displayName)
+			intent.putExtra(EXTRA_TAG_FAVOURITE, tag.favourite)
+			intent.putExtra(EXTRA_TAG_POSITION, tag.position)
 			context.startActivity(intent)
 		}
 
 	}
+}
+
+class TagHolder(
+	val tag: Tag,
+	private val favouriteViewModel: FavouriteViewModel<Tag>,
+	var menuItem: MenuItem? = null
+) {
+
+	init {
+		updateButton()
+	}
+
+	fun switchFavourite() {
+		tag.favourite = !tag.favourite
+		favouriteViewModel.onFavourite(tag)
+		updateButton()
+	}
+
+	fun updateButton() {
+		if (tag.favourite) {
+			menuItem?.setIcon(R.drawable.baseline_star_24)
+		} else {
+			menuItem?.setIcon(R.drawable.baseline_star_outline_24)
+		}
+	}
+
 }

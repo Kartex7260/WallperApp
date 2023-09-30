@@ -11,7 +11,6 @@ import kanti.wallperapp.data.repositories.TagsRepository
 import kanti.wallperapp.viewmodel.uistate.TagsUiState
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +19,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
 	private val tagsRepository: TagsRepository,
 	private val favouritesTags: FavouriteTagsRepository
-) : ViewModel(), FavouriteViewModel<Tag> {
+) : ViewModel() {
 
 	private val _tagsLiveData = MutableLiveData<TagsUiState>()
 	val tagsLiveData: LiveData<TagsUiState> = _tagsLiveData
@@ -31,31 +30,6 @@ class MainViewModel @Inject constructor(
 			val tags = tagsRepository.getTags()
 			getFavourites(tags.data ?: listOf())
 			_tagsLiveData.postValue(TagsUiState(tags))
-		}
-	}
-
-	fun updateFavouriteTag(tags: List<Tag>): LiveData<Int> {
-		val liveData = MutableLiveData<Int>()
-		viewModelScope.launch {
-			val tagsFlow = tags.asFlow()
-			tagsFlow.collectIndexed { index, tag ->
-				val isFavourite = favouritesTags.isFavourite(tag)
-				if (isFavourite != tag.favourite) {
-					tag.favourite = isFavourite
-					liveData.postValue(index)
-				}
-			}
-		}
-		return liveData
-	}
-
-	override fun onFavourite(value: Tag) {
-		viewModelScope.launch {
-			if (value.favourite) {
-				favouritesTags.add(value)
-			} else {
-				favouritesTags.delete(value)
-			}
 		}
 	}
 

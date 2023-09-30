@@ -54,8 +54,21 @@ class FavouriteTagsFragment : Fragment() {
 		}
 	}
 
+	override fun onResume() {
+		super.onResume()
+		updateFavouriteData()
+	}
+
 	private fun onClickTag(tag: Tag) {
 		ImagesActivity.startActivity(requireContext(), tag)
+	}
+
+	private fun updateFavouriteData() {
+		val adapter = viewBind.recyclerViewFavouriteTags.adapter as TagsRecyclerAdapter? ?: return
+		val favouriteLiveData = viewModel.updateFavouriteTag(adapter.tags)
+		favouriteLiveData.observe(this) { index ->
+			adapter.notifyItemChanged(index)
+		}
 	}
 
 }

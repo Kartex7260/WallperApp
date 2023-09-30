@@ -12,6 +12,7 @@ import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.RepositoryResultType
 import kanti.wallperapp.databinding.ActivityMainBinding
 import kanti.wallperapp.view.TagsRecyclerAdapter
+import kanti.wallperapp.viewmodel.FavouriteTagsViewModel
 import kanti.wallperapp.viewmodel.MainViewModel
 
 @AndroidEntryPoint
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
 	private lateinit var view: ActivityMainBinding
 	private val viewModel: MainViewModel by viewModels()
+	private val favouriteViewModel: FavouriteTagsViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 			view.recyclerViewImages.adapter = TagsRecyclerAdapter(
 				tagsUiState.tags.data ?: listOf(),
 				::onClickTagItem,
-				viewModel
+				favouriteViewModel
 			)
 
 			when (tagsUiState.tags.resultType) {
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun notifyTagCardView() {
 		val adapter = view.recyclerViewImages.adapter as TagsRecyclerAdapter? ?: return
-		val updateLiveData = viewModel.updateFavouriteTag(adapter.tags)
+		val updateLiveData = favouriteViewModel.updateFavouriteTag(adapter.tags)
 		updateLiveData.observe(this) { index ->
 			adapter.notifyItemChanged(index)
 		}

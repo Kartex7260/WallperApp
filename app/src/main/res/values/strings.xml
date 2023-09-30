@@ -39,9 +39,14 @@
     <string name="dialog_wallpaper_set_lock_screen">To the lock screen</string>
     <string name="dialog_wallpaper_set_main_screen">To the main screen</string>
     <string name="dialog_wallpaper_set_both_screens">On both screens</string>
-    
+
     <!--  Installing status  -->
     <string name="wallpaper_install_success">Wallpaper successfully installed</string>
     <string name="wallpaper_install_fail">Wallpaper failed to install</string>
+
+    <!--  Favourites  -->
+    <string name="favourites">Favourites</string>
+    <string name="favourite_tags">Tags</string>
+    <string name="favourite_images">Images</string>
 
 </resources>

@@ -9,13 +9,16 @@ import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.model.toFavoriteTag
 
 @Dao
-abstract class FavoriteTagDao {
+abstract class FavouriteTagDao {
 
-	@Query("SELECT * FROM favorite_tags")
-	abstract suspend fun getAll(): List<FavoriteTag>
+	@Query("SELECT EXISTS(SELECT 1 FROM favorite_tags WHERE name = :name)")
+	abstract suspend fun isFavourite(name: String): Boolean
+
+	@Query("SELECT * FROM favorite_tags ORDER BY position")
+	abstract suspend fun getAll(): List<FavouriteTag>
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	abstract suspend fun insert(tag: FavoriteTag)
+	abstract suspend fun insert(tag: FavouriteTag)
 
 	suspend fun insert(tag: Tag) {
 		val favoriteTag = tag.toFavoriteTag()
@@ -23,7 +26,7 @@ abstract class FavoriteTagDao {
 	}
 
 	@Delete
-	abstract suspend fun delete(tag: FavoriteTag)
+	abstract suspend fun delete(tag: FavouriteTag)
 
 	suspend fun delete(tag: Tag) {
 		val favoriteTag = tag.toFavoriteTag()

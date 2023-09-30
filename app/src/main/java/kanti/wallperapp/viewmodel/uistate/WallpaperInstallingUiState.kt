@@ -1,4 +1,4 @@
-package kanti.wallperapp.viewmodel
+package kanti.wallperapp.viewmodel.uistate
 
 data class WallpaperInstallingUiState(
 	val installingSuccess: Boolean

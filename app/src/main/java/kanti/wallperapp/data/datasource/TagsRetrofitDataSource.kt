@@ -41,8 +41,8 @@ class TagsRetrofitDataSource @Inject constructor(
 	private fun tagsDtoToTagList(metaData: MetaData<TagsDTO>?): List<Tag>? {
 		if (metaData?.data == null)
 			return null
-		return metaData.data.tags.map { tagDto ->
-			Tag(tagDto.name, tagDto.displayName)
+		return metaData.data.tags.mapIndexed { index, tagDto ->
+			Tag(tagDto.name, tagDto.displayName, position = index)
 		}
 	}
 

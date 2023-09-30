@@ -37,7 +37,8 @@ class MainActivity : AppCompatActivity() {
 			view.progressBarMain.visibility = View.INVISIBLE
 			view.recyclerViewImages.adapter = TagsRecyclerAdapter(
 				tagsUiState.tags.data ?: listOf(),
-				::onClickTagItem
+				::onClickTagItem,
+				viewModel
 			)
 
 			when (tagsUiState.tags.resultType) {
@@ -51,6 +52,11 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 		viewModel.getTags()
+	}
+
+	override fun onResume() {
+		super.onResume()
+		notifyTagCardView()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -67,6 +73,10 @@ class MainActivity : AppCompatActivity() {
 			SettingsActivity.startActivity(this)
 			true
 		}
+		R.id.menu_main_option_favourites -> {
+			FavouritesActivity.startActivity(this)
+			true
+		}
 		else -> {
 			super.onOptionsItemSelected(item)
 		}
@@ -74,6 +84,14 @@ class MainActivity : AppCompatActivity() {
 
 	private fun onClickTagItem(tag: Tag) {
 		ImagesActivity.startActivity(this, tag)
+	}
+
+	private fun notifyTagCardView() {
+		val adapter = view.recyclerViewImages.adapter as TagsRecyclerAdapter? ?: return
+		val updateLiveData = viewModel.updateFavouriteTag(adapter.tags)
+		updateLiveData.observe(this) { index ->
+			adapter.notifyItemChanged(index)
+		}
 	}
 
 }

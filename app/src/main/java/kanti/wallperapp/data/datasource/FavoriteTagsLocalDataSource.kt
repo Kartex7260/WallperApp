@@ -10,4 +10,6 @@ interface FavoriteTagsLocalDataSource {
 
 	suspend fun delete(tag: Tag)
 
+	suspend fun isFavourite(tag: Tag): Boolean
+
 }

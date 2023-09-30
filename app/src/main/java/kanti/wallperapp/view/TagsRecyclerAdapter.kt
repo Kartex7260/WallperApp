@@ -7,15 +7,30 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kanti.wallperapp.R
 import kanti.wallperapp.data.model.Tag
+import kanti.wallperapp.viewmodel.FavouriteViewModel
 
 class TagsRecyclerAdapter(
-	private val tags: List<Tag>,
-	private val onClick: (Tag) -> Unit
+	val tags: List<Tag>,
+	private val onClick: (Tag) -> Unit,
+	private val favouriteViewModel: FavouriteViewModel<Tag>
 ) : RecyclerView.Adapter<TagsRecyclerAdapter.TagViewHolder>() {
 
-	class TagViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+	inner class TagViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-		val textViewTagDisplayName: TextView = view.findViewById(R.id.textViewTagDisplayName)
+		private val textViewTagDisplayName: TextView = view.findViewById(R.id.textViewTagDisplayName)
+		private val starButtonTag: StarButton = view.findViewById(R.id.starButtonTag)
+
+		fun setTag(tag: Tag) {
+			textViewTagDisplayName.text = tag.displayName
+
+			starButtonTag.checked = tag.favourite
+			starButtonTag.setOnClickListener {
+				tag.favourite = starButtonTag.checked
+				favouriteViewModel.onFavourite(tag)
+			}
+
+			itemView.setOnClickListener { onClick(tag) }
+		}
 
 	}
 
@@ -27,8 +42,7 @@ class TagsRecyclerAdapter(
 
 	override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
 		val tag = tags[position]
-		holder.textViewTagDisplayName.text = tag.displayName
-		holder.itemView.setOnClickListener { onClick(tag) }
+		holder.setTag(tag)
 	}
 
 	override fun getItemCount(): Int = tags.size

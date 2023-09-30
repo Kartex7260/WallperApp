@@ -1,4 +1,4 @@
-package kanti.wallperapp.viewmodel
+package kanti.wallperapp.viewmodel.uistate
 
 import kanti.wallperapp.data.model.ImageData
 import kanti.wallperapp.data.repositories.RepositoryResult

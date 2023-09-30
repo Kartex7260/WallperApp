@@ -1,11 +1,11 @@
 package kanti.wallperapp.data.model
 
-import kanti.wallperapp.data.room.FavoriteTag
+import kanti.wallperapp.data.room.FavouriteTag
 
-fun Tag.toFavoriteTag(): FavoriteTag {
-	return FavoriteTag(name, displayName)
+fun Tag.toFavoriteTag(): FavouriteTag {
+	return FavouriteTag(name, displayName, position)
 }
 
-fun FavoriteTag.toTag(): Tag {
-	return Tag(name, displayName)
+fun FavouriteTag.toTag(): Tag {
+	return Tag(name, displayName, true, position)
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.wallperapp.data.repositories.ImageDataRepository
+import kanti.wallperapp.viewmodel.uistate.ImagesUiState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

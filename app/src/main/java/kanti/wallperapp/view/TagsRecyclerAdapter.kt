@@ -7,12 +7,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kanti.wallperapp.R
 import kanti.wallperapp.data.model.Tag
-import kanti.wallperapp.viewmodel.FavouriteViewModel
+import kanti.wallperapp.domain.OnFavourite
 
 class TagsRecyclerAdapter(
 	val tags: List<Tag>,
 	private val onClick: (Tag) -> Unit,
-	private val favouriteViewModel: FavouriteViewModel<Tag>
+	private val favouriteViewModel: OnFavourite<Tag>
 ) : RecyclerView.Adapter<TagsRecyclerAdapter.TagViewHolder>() {
 
 	inner class TagViewHolder(view: View) : RecyclerView.ViewHolder(view) {

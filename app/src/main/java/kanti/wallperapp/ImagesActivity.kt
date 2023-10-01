@@ -17,10 +17,9 @@ import kanti.wallperapp.data.model.ImageData
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.RepositoryResultType
 import kanti.wallperapp.databinding.ActivityImagesBinding
+import kanti.wallperapp.domain.OnFavourite
 import kanti.wallperapp.net.smallImageRequest
 import kanti.wallperapp.view.ImagesRecyclerAdapter
-import kanti.wallperapp.viewmodel.FavouriteTagsViewModel
-import kanti.wallperapp.viewmodel.FavouriteViewModel
 import kanti.wallperapp.viewmodel.ImagesViewModel
 
 @AndroidEntryPoint
@@ -30,7 +29,6 @@ class ImagesActivity : AppCompatActivity() {
 
 	private lateinit var view: ActivityImagesBinding
 	private val viewModel: ImagesViewModel by viewModels()
-	private val favouriteViewModel: FavouriteTagsViewModel by viewModels()
 
 	private lateinit var tagHolder: TagHolder
 
@@ -44,7 +42,7 @@ class ImagesActivity : AppCompatActivity() {
 			finish()
 			return
 		}
-		tagHolder = TagHolder(tag, favouriteViewModel)
+		tagHolder = TagHolder(tag, viewModel.getOnFavouriteTag())
 
 		view.recyclerViewImages.layoutManager = GridLayoutManager(this, columnCount)
 
@@ -150,7 +148,7 @@ class ImagesActivity : AppCompatActivity() {
 
 class TagHolder(
 	val tag: Tag,
-	private val favouriteViewModel: FavouriteViewModel<Tag>,
+	private val favouriteViewModel: OnFavourite<Tag>,
 	var menuItem: MenuItem? = null
 ) {
 

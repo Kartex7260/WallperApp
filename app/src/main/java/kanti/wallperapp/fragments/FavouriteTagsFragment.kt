@@ -65,7 +65,7 @@ class FavouriteTagsFragment : Fragment() {
 
 	private fun updateFavouriteData() {
 		val adapter = viewBind.recyclerViewFavouriteTags.adapter as TagsRecyclerAdapter? ?: return
-		val favouriteLiveData = viewModel.updateFavouriteTag(adapter.tags)
+		val favouriteLiveData = viewModel.updateFavouriteTags(adapter.tags)
 		favouriteLiveData.observe(this) { index ->
 			adapter.notifyItemChanged(index)
 		}

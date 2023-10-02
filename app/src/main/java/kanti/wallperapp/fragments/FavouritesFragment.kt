@@ -33,13 +33,13 @@ class FavouritesFragment : Fragment() {
 					addToBackStack(backStack)
 				}
 			}
-//			cardViewFavouriteImages.setOnClickListener {
-//				childFragmentManager.commit {
-//					setReorderingAllowed(true)
-//					replace<FavouriteImagesFragment>(R.id.fragment_container_favourites)
-//					addToBackStack(backStack)
-//				}
-//			}
+			cardViewFavouriteImages.setOnClickListener {
+				parentFragmentManager.commit {
+					setReorderingAllowed(true)
+					replace<FavouriteImagesFragment>(R.id.fragment_container_favourites)
+					addToBackStack(backStack)
+				}
+			}
 		}
 	}
 

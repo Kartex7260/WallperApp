@@ -128,7 +128,7 @@ class ImagesActivity : AppCompatActivity() {
 			val name = getStringExtra(EXTRA_TAG_NAME) ?: return null
 			val displayName = getStringExtra(EXTRA_TAG_DISPLAY_NAME) ?: return null
 			val favourite = getBooleanExtra(EXTRA_TAG_FAVOURITE, false)
-			val position = getIntExtra(EXTRA_TAG_NAME, -1)
+			val position = getIntExtra(EXTRA_TAG_POSITION, -1)
 			return Tag(name, displayName, favourite, position)
 		}
 	}

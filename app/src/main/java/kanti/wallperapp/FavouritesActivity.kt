@@ -12,6 +12,7 @@ class FavouritesActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_favourites)
+		title = getString(R.string.favourites)
 	}
 
 	companion object {

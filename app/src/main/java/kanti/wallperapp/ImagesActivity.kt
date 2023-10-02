@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.imageLoader
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,7 +58,8 @@ class ImagesActivity : AppCompatActivity() {
 			view.recyclerViewImages.adapter = ImagesRecyclerAdapter(
 				imagesUiState.images.data ?: listOf(),
 				::onClickRecyclerImage,
-				::onBindImage
+				::onBindImage,
+				viewModel
 			)
 
 			when (imagesUiState.images.resultType) {
@@ -81,6 +83,11 @@ class ImagesActivity : AppCompatActivity() {
 
 		title = tagHolder.tag.displayName
 		updateImages()
+	}
+
+	override fun onResume() {
+		super.onResume()
+		updateFavouriteData()
 	}
 
 	private fun onClickRecyclerImage(imageData: ImageData) {
@@ -123,6 +130,14 @@ class ImagesActivity : AppCompatActivity() {
 			val favourite = getBooleanExtra(EXTRA_TAG_FAVOURITE, false)
 			val position = getIntExtra(EXTRA_TAG_NAME, -1)
 			return Tag(name, displayName, favourite, position)
+		}
+	}
+
+	private fun updateFavouriteData() {
+		val adapter = view.recyclerViewImages.adapter as ImagesRecyclerAdapter? ?: return
+		val indexLiveData = viewModel.updateFavouriteImages(lifecycleScope, adapter.imageData)
+		indexLiveData.observe(this) {
+			adapter.notifyItemChanged(it)
 		}
 	}
 

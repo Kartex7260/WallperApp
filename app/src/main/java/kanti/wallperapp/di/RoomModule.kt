@@ -9,7 +9,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kanti.wallperapp.R
 import kanti.wallperapp.data.room.AppDatabase
-import kanti.wallperapp.data.room.FavouriteTagDao
+import kanti.wallperapp.data.room.ImageDataDao
+import kanti.wallperapp.data.room.TagDao
 import javax.inject.Singleton
 
 @Module
@@ -17,8 +18,13 @@ import javax.inject.Singleton
 class RoomModule {
 
 	@Provides
-	fun provideFavoriteTagDao(room: AppDatabase): FavouriteTagDao {
+	fun provideTagDao(room: AppDatabase): TagDao {
 		return room.favoriteTagDao()
+	}
+
+	@Provides
+	fun provideImageDataDao(room: AppDatabase): ImageDataDao {
+		return room.favouriteImageDataDao()
 	}
 
 	@Singleton

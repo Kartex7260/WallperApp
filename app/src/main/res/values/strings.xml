@@ -24,7 +24,7 @@
     <!--  Option menu  -->
     <string name="menu_option_refresh">Refresh</string>
     <string name="menu_main_option_settings">Settings</string>
-    <string name="menu_images_option_favourite">Favourite</string>
+    <string name="menu_option_favourite">Favourite</string>
 
     <!--  Preference  -->
     <string name="preference_theme_key" translatable="false">dark_mode</string>

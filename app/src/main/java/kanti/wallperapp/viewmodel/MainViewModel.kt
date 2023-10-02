@@ -9,9 +9,9 @@ import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.FavouriteTagsRepository
 import kanti.wallperapp.data.repositories.TagsRepository
 import kanti.wallperapp.domain.OnFavourite
-import kanti.wallperapp.domain.OnFavouriteTagUseCase
 import kanti.wallperapp.domain.UpdateFavouriteTagsUseCase
 import kanti.wallperapp.viewmodel.uistate.TagsUiState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -22,8 +22,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
 	private val tagsRepository: TagsRepository,
 	private val favouritesTags: FavouriteTagsRepository,
-	private val onFavouriteTag: OnFavouriteTagUseCase,
-	private val updateFavouriteTags: UpdateFavouriteTagsUseCase
+	private val updateFavouriteTagsUseCase: UpdateFavouriteTagsUseCase
 ) : ViewModel(), OnFavourite<Tag> {
 
 	private val _tagsLiveData = MutableLiveData<TagsUiState>()
@@ -39,11 +38,13 @@ class MainViewModel @Inject constructor(
 	}
 
 	override fun onFavourite(value: Tag) {
-		onFavouriteTag(viewModelScope, value)
+		viewModelScope.launch {
+			favouritesTags.onFavourite(value)
+		}
 	}
 
-	fun updateFavouriteTags(tags: List<Tag>): LiveData<Int> {
-		return updateFavouriteTags(viewModelScope, tags)
+	fun updateFavouriteTags(coroutineScope: CoroutineScope, tags: List<Tag>): LiveData<Int> {
+		return updateFavouriteTagsUseCase(coroutineScope, tags)
 	}
 
 	private suspend fun getFavourites(list: List<Tag>) {

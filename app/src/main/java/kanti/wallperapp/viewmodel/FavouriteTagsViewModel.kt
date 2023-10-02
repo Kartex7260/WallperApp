@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.FavouriteTagsRepository
 import kanti.wallperapp.domain.OnFavourite
-import kanti.wallperapp.domain.OnFavouriteTagUseCase
 import kanti.wallperapp.domain.UpdateFavouriteTagsUseCase
 import kanti.wallperapp.viewmodel.uistate.FavouriteTagsUiState
 import kotlinx.coroutines.launch
@@ -17,7 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FavouriteTagsViewModel @Inject constructor(
 	private val favouriteTags: FavouriteTagsRepository,
-	private val onFavouriteTag: OnFavouriteTagUseCase,
 	private val updateFavouriteTgs: UpdateFavouriteTagsUseCase
 ) : ViewModel(), OnFavourite<Tag> {
 
@@ -34,7 +32,9 @@ class FavouriteTagsViewModel @Inject constructor(
 	}
 
 	override fun onFavourite(value: Tag) {
-		onFavouriteTag(viewModelScope, value)
+		viewModelScope.launch {
+			favouriteTags.onFavourite(value)
+		}
 	}
 
 	fun updateFavouriteTags(tags: List<Tag>): LiveData<Int> {

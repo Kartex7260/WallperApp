@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.RepositoryResultType
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun notifyTagCardView() {
 		val adapter = view.recyclerViewImages.adapter as TagsRecyclerAdapter? ?: return
-		val updateLiveData = viewModel.updateFavouriteTags(adapter.tags)
+		val updateLiveData = viewModel.updateFavouriteTags(lifecycleScope, adapter.tags)
 		updateLiveData.observe(this) { index ->
 			adapter.notifyItemChanged(index)
 		}

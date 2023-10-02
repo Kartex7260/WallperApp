@@ -12,9 +12,13 @@ class FavouriteTagsRepository @Inject constructor(
 
 	suspend fun getAll(): List<Tag> = favouriteTagsLocal.getAll()
 
-	suspend fun add(tag: Tag) = favouriteTagsLocal.add(tag)
-
-	suspend fun delete(tag: Tag) = favouriteTagsLocal.delete(tag)
+	suspend fun onFavourite(tag: Tag) {
+		if (tag.favourite) {
+			favouriteTagsLocal.add(tag)
+		} else {
+			favouriteTagsLocal.delete(tag)
+		}
+	}
 
 	suspend fun isFavourite(tag: Tag) = favouriteTagsLocal.isFavourite(tag)
 

@@ -11,12 +11,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kanti.wallperapp.data.model.ImageData
+import kanti.wallperapp.data.repositories.FavouriteImagesRepository
+import kanti.wallperapp.domain.OnFavourite
 import kanti.wallperapp.viewmodel.uistate.WallpaperInstallingUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class WallpaperInstallingViewModel : ViewModel() {
+@HiltViewModel
+class WallpaperInstallingViewModel @Inject constructor(
+	private val favouriteImages: FavouriteImagesRepository
+) : ViewModel(), OnFavourite<ImageData> {
 
 	private lateinit var wallpaperBitmap: Bitmap
 
@@ -64,6 +72,12 @@ class WallpaperInstallingViewModel : ViewModel() {
 			left + displayMetrics.widthPixels,
 			bitmap.height
 		)
+	}
+
+	override fun onFavourite(value: ImageData) {
+		viewModelScope.launch {
+			favouriteImages.onFavourite(value)
+		}
 	}
 
 }

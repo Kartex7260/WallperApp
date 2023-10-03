@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.imageLoader
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,17 +52,13 @@ class FavouriteImagesFragment : Fragment() {
 
 			view.progressBarFavouriteImages.visibility = View.INVISIBLE
 			view.recyclerViewFavouriteImages.adapter = ImagesRecyclerAdapter(
-				uiState.images ?: listOf(),
+				uiState.images ?: mutableListOf(),
+				viewLifecycleOwner,
 				::onImageClick,
 				::onLoadImage,
-				viewModel
+				viewModel.favouriteImageViewModel
 			)
 		}
-	}
-
-	override fun onResume() {
-		super.onResume()
-		updateFavouriteData()
 	}
 
 	private fun onImageClick(image: ImageData) {
@@ -74,14 +69,6 @@ class FavouriteImagesFragment : Fragment() {
 		requireContext().apply {
 			val request = smallImageRequest(viewLifecycleOwner, imageData, imageView)
 			imageLoader.enqueue(request)
-		}
-	}
-
-	private fun updateFavouriteData() {
-		val adapter = view.recyclerViewFavouriteImages.adapter as ImagesRecyclerAdapter? ?: return
-		val indexLiveData = viewModel.updateFavouriteImages(viewLifecycleOwner.lifecycleScope, adapter.imageData)
-		indexLiveData.observe(viewLifecycleOwner) {
-			adapter.notifyItemChanged(it)
 		}
 	}
 

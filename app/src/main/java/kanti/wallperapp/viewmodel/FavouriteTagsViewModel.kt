@@ -7,20 +7,21 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.FavouriteTagsRepository
-import kanti.wallperapp.domain.OnFavourite
-import kanti.wallperapp.domain.UpdateFavouriteTagsUseCase
 import kanti.wallperapp.viewmodel.uistate.FavouriteTagsUiState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavouriteTagsViewModel @Inject constructor(
-	private val favouriteTags: FavouriteTagsRepository,
-	private val updateFavouriteTgs: UpdateFavouriteTagsUseCase
-) : ViewModel(), OnFavourite<Tag> {
+	private val favouriteTags: FavouriteTagsRepository
+) : ViewModel() {
 
 	private val _tagsLiveData = MutableLiveData<FavouriteTagsUiState>()
 	val tagsLiveData: LiveData<FavouriteTagsUiState> = _tagsLiveData
+
+	val favouriteTagViewModel: FavouriteViewModel<Tag> by lazy {
+		FavouriteTagViewModel(viewModelScope, favouriteTags)
+	}
 
 	fun getTags() {
 		_tagsLiveData.value = FavouriteTagsUiState(process = true)
@@ -29,16 +30,6 @@ class FavouriteTagsViewModel @Inject constructor(
 			val uiState = FavouriteTagsUiState(tags)
 			_tagsLiveData.postValue(uiState)
 		}
-	}
-
-	override fun onFavourite(value: Tag) {
-		viewModelScope.launch {
-			favouriteTags.onFavourite(value)
-		}
-	}
-
-	fun updateFavouriteTags(tags: List<Tag>): LiveData<Int> {
-		return updateFavouriteTgs(viewModelScope, tags)
 	}
 
 }

@@ -4,6 +4,6 @@ import kanti.wallperapp.data.model.ImageData
 
 interface ImageLinksRemoteDataSource {
 
-	suspend fun getImages(tagName: String): RemoteDataResult<List<ImageData>>
+	suspend fun getImages(tagName: String): RemoteDataResult<MutableList<ImageData>>
 
 }

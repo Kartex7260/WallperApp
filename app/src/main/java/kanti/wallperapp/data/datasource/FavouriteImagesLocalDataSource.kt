@@ -4,9 +4,11 @@ import kanti.wallperapp.data.model.ImageData
 
 interface FavouriteImagesLocalDataSource {
 
-	suspend fun getAll(): List<ImageData>
+	suspend fun getAll(): MutableList<ImageData>
 
-	suspend fun add(image: ImageData)
+	suspend fun get(imageData: ImageData): ImageData
+
+	suspend fun insert(image: ImageData)
 
 	suspend fun delete(image: ImageData)
 

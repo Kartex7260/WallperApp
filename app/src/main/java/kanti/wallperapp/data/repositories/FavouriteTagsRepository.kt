@@ -10,14 +10,22 @@ class FavouriteTagsRepository @Inject constructor(
 	private val favouriteTagsLocal: FavoriteTagsLocalDataSource
 ) {
 
-	suspend fun getAll(): List<Tag> = favouriteTagsLocal.getAll()
+	suspend fun getAll() = favouriteTagsLocal.getAll()
 
-	suspend fun onFavourite(tag: Tag) {
-		if (tag.favourite) {
-			favouriteTagsLocal.add(tag)
+	suspend fun onFavourite(tag: Tag, isFavourite: Boolean): Tag {
+		if (isFavourite) {
+			favouriteTagsLocal.insert(tag)
 		} else {
 			favouriteTagsLocal.delete(tag)
 		}
+		return favouriteTagsLocal.get(tag)
+	}
+
+	suspend fun syncFavourite(tag: Tag): Tag? {
+		val isFavourite = isFavourite(tag)
+		if (isFavourite == tag.favourite)
+			return null
+		return favouriteTagsLocal.get(tag)
 	}
 
 	suspend fun isFavourite(tag: Tag) = favouriteTagsLocal.isFavourite(tag)

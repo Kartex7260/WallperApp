@@ -18,7 +18,7 @@ class TagsRetrofitDataSource @Inject constructor(
 
 	private val logTag = "TagsRetrofitService"
 
-	override suspend fun getTags(): RemoteDataResult<List<Tag>> {
+	override suspend fun getTags(): RemoteDataResult<MutableList<Tag>> {
 		Log.d(logTag, "getTags()")
 
 		if (!connectionChecker.isConnection()) {
@@ -38,12 +38,12 @@ class TagsRetrofitDataSource @Inject constructor(
 		}
 	}
 
-	private fun tagsDtoToTagList(metaData: MetaData<TagsDTO>?): List<Tag>? {
+	private fun tagsDtoToTagList(metaData: MetaData<TagsDTO>?): MutableList<Tag>? {
 		if (metaData?.data == null)
 			return null
 		return metaData.data.tags.mapIndexed { index, tagDto ->
 			Tag(tagDto.name, tagDto.displayName, position = index)
-		}
+		}.toMutableList()
 	}
 
 }

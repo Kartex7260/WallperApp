@@ -47,28 +47,16 @@ class FavouriteTagsFragment : Fragment() {
 
 			viewBind.progressBarFavouriteTags.visibility = View.INVISIBLE
 			viewBind.recyclerViewFavouriteTags.adapter = TagsRecyclerAdapter(
-				it.tags ?: listOf(),
+				it.tags ?: mutableListOf(),
+				viewLifecycleOwner,
 				::onClickTag,
-				viewModel
+				viewModel.favouriteTagViewModel
 			)
 		}
 	}
 
-	override fun onResume() {
-		super.onResume()
-		updateFavouriteData()
-	}
-
 	private fun onClickTag(tag: Tag) {
 		ImagesActivity.startActivity(requireContext(), tag)
-	}
-
-	private fun updateFavouriteData() {
-		val adapter = viewBind.recyclerViewFavouriteTags.adapter as TagsRecyclerAdapter? ?: return
-		val favouriteLiveData = viewModel.updateFavouriteTags(adapter.tags)
-		favouriteLiveData.observe(this) { index ->
-			adapter.notifyItemChanged(index)
-		}
 	}
 
 }

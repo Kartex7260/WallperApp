@@ -14,7 +14,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.wallperapp.data.model.ImageData
 import kanti.wallperapp.data.repositories.FavouriteImagesRepository
-import kanti.wallperapp.domain.OnFavourite
 import kanti.wallperapp.viewmodel.uistate.WallpaperInstallingUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,12 +23,26 @@ import javax.inject.Inject
 @HiltViewModel
 class WallpaperInstallingViewModel @Inject constructor(
 	private val favouriteImages: FavouriteImagesRepository
-) : ViewModel(), OnFavourite<ImageData> {
+) : ViewModel() {
 
 	private lateinit var wallpaperBitmap: Bitmap
 
 	private val _installationStatusLiveData = MutableLiveData<WallpaperInstallingUiState>()
 	val installingStatusLiveData: LiveData<WallpaperInstallingUiState> = _installationStatusLiveData
+
+	val favouriteImageViewModel: FavouriteViewModel<ImageData> by lazy {
+		FavouriteImageViewModel(viewModelScope, favouriteImages)
+	}
+
+	fun syncFavouriteImage(imageData: ImageData): LiveData<ImageData> {
+		val liveData = MutableLiveData<ImageData>()
+		viewModelScope.launch {
+			liveData.postValue(
+				favouriteImages.syncFavourite(imageData) ?: imageData
+			)
+		}
+		return liveData
+	}
 
 	fun setDrawable(drawable: Drawable) {
 		wallpaperBitmap = drawable.toBitmap()
@@ -72,12 +85,6 @@ class WallpaperInstallingViewModel @Inject constructor(
 			left + displayMetrics.widthPixels,
 			bitmap.height
 		)
-	}
-
-	override fun onFavourite(value: ImageData) {
-		viewModelScope.launch {
-			favouriteImages.onFavourite(value)
-		}
 	}
 
 }

@@ -11,9 +11,13 @@ class FavouriteImagesRoomDataSource @Inject constructor(
 
 	override suspend fun getAll() = favouriteImages.getAll().map {
 			it.asImageData()
-		}
+		}.toMutableList()
 
-	override suspend fun add(image: ImageData) = favouriteImages.insert(image)
+	override suspend fun get(imageData: ImageData): ImageData {
+		return favouriteImages.get(imageData)?.asImageData() ?: imageData.copy(favourite = false)
+	}
+
+	override suspend fun insert(image: ImageData) = favouriteImages.insert(image)
 
 	override suspend fun delete(image: ImageData) = favouriteImages.delete(image)
 

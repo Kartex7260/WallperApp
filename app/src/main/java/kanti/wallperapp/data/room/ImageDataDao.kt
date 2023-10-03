@@ -19,6 +19,16 @@ abstract class ImageDataDao {
 	@Query("SELECT * FROM favourite_images ORDER BY position")
 	abstract suspend fun getAll(): List<RoomImageData>
 
+	@Query("SELECT * FROM favourite_images WHERE link = :link")
+	abstract suspend fun get(link: String): List<RoomImageData>
+
+	suspend fun get(imageData: ImageData): RoomImageData? {
+		val roomImages = get(imageData.link)
+		if (roomImages.isEmpty())
+			return null
+		return roomImages[0]
+	}
+
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	abstract suspend fun insert(imageData: RoomImageData)
 

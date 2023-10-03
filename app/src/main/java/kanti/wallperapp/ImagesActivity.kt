@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.imageLoader
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,9 +18,9 @@ import kanti.wallperapp.data.model.ImageData
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.RepositoryResultType
 import kanti.wallperapp.databinding.ActivityImagesBinding
-import kanti.wallperapp.domain.OnFavourite
 import kanti.wallperapp.net.smallImageRequest
 import kanti.wallperapp.view.ImagesRecyclerAdapter
+import kanti.wallperapp.viewmodel.FavouriteViewModel
 import kanti.wallperapp.viewmodel.ImagesViewModel
 
 @AndroidEntryPoint
@@ -43,7 +43,7 @@ class ImagesActivity : AppCompatActivity() {
 			finish()
 			return
 		}
-		tagHolder = TagHolder(tag, viewModel.getOnFavouriteTag())
+		tagHolder = TagHolder(tag, this, viewModel.favouriteTagViewModel)
 
 		view.recyclerViewImages.layoutManager = GridLayoutManager(this, columnCount)
 
@@ -56,10 +56,11 @@ class ImagesActivity : AppCompatActivity() {
 
 			view.progressBarImages.visibility = View.INVISIBLE
 			view.recyclerViewImages.adapter = ImagesRecyclerAdapter(
-				imagesUiState.images.data ?: listOf(),
+				imagesUiState.images.data ?: mutableListOf(),
+				this,
 				::onClickRecyclerImage,
 				::onBindImage,
-				viewModel
+				viewModel.favouriteImageViewModel
 			)
 
 			when (imagesUiState.images.resultType) {
@@ -83,11 +84,6 @@ class ImagesActivity : AppCompatActivity() {
 
 		title = tagHolder.tag.displayName
 		updateImages()
-	}
-
-	override fun onResume() {
-		super.onResume()
-		updateFavouriteData()
 	}
 
 	private fun onClickRecyclerImage(imageData: ImageData) {
@@ -133,14 +129,6 @@ class ImagesActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun updateFavouriteData() {
-		val adapter = view.recyclerViewImages.adapter as ImagesRecyclerAdapter? ?: return
-		val indexLiveData = viewModel.updateFavouriteImages(lifecycleScope, adapter.imageData)
-		indexLiveData.observe(this) {
-			adapter.notifyItemChanged(it)
-		}
-	}
-
 
 	companion object {
 
@@ -162,23 +150,29 @@ class ImagesActivity : AppCompatActivity() {
 }
 
 class TagHolder(
-	val tag: Tag,
-	private val favouriteViewModel: OnFavourite<Tag>,
+	private var _tag: Tag,
+	private val lifecycleOwner: LifecycleOwner,
+	private val favouriteViewModel: FavouriteViewModel<Tag>,
 	var menuItem: MenuItem? = null
 ) {
+
+	val tag: Tag
+		get() = _tag
 
 	init {
 		updateButton()
 	}
 
 	fun switchFavourite() {
-		tag.favourite = !tag.favourite
-		favouriteViewModel.onFavourite(tag)
-		updateButton()
+		val liveData = favouriteViewModel.onFavourite(_tag, !_tag.favourite)
+		liveData.observe(lifecycleOwner) { newTag ->
+			_tag = newTag
+			updateButton()
+		}
 	}
 
 	fun updateButton() {
-		if (tag.favourite) {
+		if (_tag.favourite) {
 			menuItem?.setIcon(R.drawable.baseline_star_24)
 		} else {
 			menuItem?.setIcon(R.drawable.baseline_star_outline_24)

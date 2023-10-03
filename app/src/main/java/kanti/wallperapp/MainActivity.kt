@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.RepositoryResultType
@@ -37,9 +36,10 @@ class MainActivity : AppCompatActivity() {
 
 			view.progressBarMain.visibility = View.INVISIBLE
 			view.recyclerViewImages.adapter = TagsRecyclerAdapter(
-				tagsUiState.tags.data ?: listOf(),
+				tagsUiState.tags.data ?: mutableListOf(),
+				this,
 				::onClickTagItem,
-				viewModel
+				viewModel.favouriteTagViewModel
 			)
 
 			when (tagsUiState.tags.resultType) {
@@ -53,11 +53,6 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 		viewModel.getTags()
-	}
-
-	override fun onResume() {
-		super.onResume()
-		notifyTagCardView()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -85,14 +80,6 @@ class MainActivity : AppCompatActivity() {
 
 	private fun onClickTagItem(tag: Tag) {
 		ImagesActivity.startActivity(this, tag)
-	}
-
-	private fun notifyTagCardView() {
-		val adapter = view.recyclerViewImages.adapter as TagsRecyclerAdapter? ?: return
-		val updateLiveData = viewModel.updateFavouriteTags(lifecycleScope, adapter.tags)
-		updateLiveData.observe(this) { index ->
-			adapter.notifyItemChanged(index)
-		}
 	}
 
 }

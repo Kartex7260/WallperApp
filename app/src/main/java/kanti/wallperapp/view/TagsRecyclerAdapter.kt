@@ -4,34 +4,56 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import kanti.wallperapp.R
 import kanti.wallperapp.data.model.Tag
-import kanti.wallperapp.domain.OnFavourite
+import kanti.wallperapp.viewmodel.FavouriteViewModel
 
 class TagsRecyclerAdapter(
-	val tags: List<Tag>,
+	val tags: MutableList<Tag>,
+	private val lifecycleOwner: LifecycleOwner,
 	private val onClick: (Tag) -> Unit,
-	private val favouriteViewModel: OnFavourite<Tag>
-) : RecyclerView.Adapter<TagsRecyclerAdapter.TagViewHolder>() {
+	private val favouriteViewModel: FavouriteViewModel<Tag>
+) : RecyclerView.Adapter<TagsRecyclerAdapter.TagViewHolder>(), DefaultLifecycleObserver {
 
 	inner class TagViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
 		private val textViewTagDisplayName: TextView = view.findViewById(R.id.textViewTagDisplayName)
 		private val starButtonTag: StarButton = view.findViewById(R.id.starButtonTag)
 
-		fun setTag(tag: Tag) {
+		fun setTag(tag: Tag, index: Int) {
 			textViewTagDisplayName.text = tag.displayName
 
 			starButtonTag.checked = tag.favourite
 			starButtonTag.setOnClickListener {
-				tag.favourite = starButtonTag.checked
-				favouriteViewModel.onFavourite(tag)
+				val liveData = favouriteViewModel.onFavourite(tag, starButtonTag.checked)
+				liveData.observe(lifecycleOwner) { tag ->
+					tags[index] = tag
+					notifyItemChanged(index)
+					liveData.removeObservers(lifecycleOwner)
+				}
 			}
 
 			itemView.setOnClickListener { onClick(tag) }
 		}
 
+	}
+
+	init {
+		lifecycleOwner.lifecycle.addObserver(this)
+	}
+
+	override fun onResume(owner: LifecycleOwner) {
+		super.onResume(owner)
+		val favouriteLiveData = favouriteViewModel.syncFavouriteData(tags)
+		favouriteLiveData.observe(lifecycleOwner) { favouriteUiState ->
+			favouriteUiState.apply {
+				tags[index] = value
+				notifyItemChanged(index)
+			}
+		}
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
@@ -42,7 +64,7 @@ class TagsRecyclerAdapter(
 
 	override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
 		val tag = tags[position]
-		holder.setTag(tag)
+		holder.setTag(tag, position)
 	}
 
 	override fun getItemCount(): Int = tags.size

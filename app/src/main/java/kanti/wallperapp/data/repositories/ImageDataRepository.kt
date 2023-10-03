@@ -11,7 +11,7 @@ class ImageDataRepository @Inject constructor(
 	private val imageRemote: ImageLinksRemoteDataSource
 ) {
 
-	suspend fun getImageLinks(tagName: String): RepositoryResult<List<ImageData>> {
+	suspend fun getImageLinks(tagName: String): RepositoryResult<MutableList<ImageData>> {
 		val images = imageRemote.getImages(tagName)
 		return images.toRepositoryResult()
 	}

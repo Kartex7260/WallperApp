@@ -9,9 +9,13 @@ class FavoriteTagsRoomDataSource @Inject constructor(
 	private val dao: TagDao
 ) : FavoriteTagsLocalDataSource {
 
-	override suspend fun getAll(): List<Tag> = dao.getAll().map { it.asTag() }
+	override suspend fun getAll() = dao.getAll().map { it.asTag() }.toMutableList()
 
-	override suspend fun add(tag: Tag) = dao.insert(tag)
+	override suspend fun get(tag: Tag): Tag {
+		return dao.get(tag)?.asTag() ?: return tag.copy(favourite = false)
+	}
+
+	override suspend fun insert(tag: Tag) = dao.insert(tag)
 
 	override suspend fun delete(tag: Tag) = dao.delete(tag)
 

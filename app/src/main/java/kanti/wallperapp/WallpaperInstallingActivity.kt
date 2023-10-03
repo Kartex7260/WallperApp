@@ -8,13 +8,14 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
 import coil.imageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kanti.wallperapp.data.model.ImageData
 import kanti.wallperapp.databinding.ActivityWallpaperSetBinding
-import kanti.wallperapp.domain.OnFavourite
 import kanti.wallperapp.fragments.WallpaperInstallingDialogFragment
 import kanti.wallperapp.net.largeImageRequest
+import kanti.wallperapp.viewmodel.FavouriteViewModel
 import kanti.wallperapp.viewmodel.WallpaperInstallingViewModel
 
 @AndroidEntryPoint
@@ -36,11 +37,13 @@ class WallpaperInstallingActivity : AppCompatActivity() {
 			return
 		}
 
-		imageHolder = ImageHolder(imageData, viewModel)
+		viewModel.syncFavouriteImage(imageData).observe(this) { syncedImageData ->
+			imageHolder = ImageHolder(syncedImageData, this, viewModel.favouriteImageViewModel)
 
-		title = imageData.title
-		val imageRequest = largeImageRequest(this, imageData, view.imageViewWallpaper)
-		imageLoader.enqueue(imageRequest)
+			title = syncedImageData.title
+			val imageRequest = largeImageRequest(this, syncedImageData, view.imageViewWallpaper)
+			imageLoader.enqueue(imageRequest)
+		}
 
 		view.buttonSetWallpaper.setOnClickListener {
 			viewModel.setDrawable(view.imageViewWallpaper.drawable)
@@ -111,8 +114,9 @@ class WallpaperInstallingActivity : AppCompatActivity() {
 }
 
 private class ImageHolder(
-	val image: ImageData,
-	private val onFavourite: OnFavourite<ImageData>,
+	private var _image: ImageData,
+	private val lifecycleOwner: LifecycleOwner,
+	private val favouriteViewModel: FavouriteViewModel<ImageData>,
 	var menuItem: MenuItem? = null
 ) {
 
@@ -121,14 +125,16 @@ private class ImageHolder(
 	}
 
 	fun switchFavourite() {
-		image.favourite = !image.favourite
-		onFavourite.onFavourite(image)
-		updateButton()
+		val liveData = favouriteViewModel.onFavourite(_image, !_image.favourite)
+		liveData.observe(lifecycleOwner) { newImage ->
+			_image = newImage
+			updateButton()
+		}
 	}
 
 	fun updateButton() {
 		menuItem?.apply {
-			if (image.favourite) {
+			if (_image.favourite) {
 				setIcon(R.drawable.baseline_star_24)
 			} else {
 				setIcon(R.drawable.baseline_star_outline_24)

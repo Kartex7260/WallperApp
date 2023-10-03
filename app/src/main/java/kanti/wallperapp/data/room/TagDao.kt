@@ -19,6 +19,16 @@ abstract class TagDao {
 	@Query("SELECT * FROM favourite_tags ORDER BY position")
 	abstract suspend fun getAll(): List<RoomTag>
 
+	@Query("SELECT * FROM favourite_tags WHERE name = :name")
+	abstract suspend fun get(name: String): List<RoomTag>
+
+	suspend fun get(tag: Tag): RoomTag? {
+		val roomTags = get(tag.name)
+		if (roomTags.isEmpty())
+			return null
+		return roomTags[0]
+	}
+
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	abstract suspend fun insert(tag: RoomTag)
 

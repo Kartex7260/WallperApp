@@ -18,7 +18,7 @@ class ImageLinksRetrofitDataSource @Inject constructor(
 
 	private val logTag = "ImageRetrofitService"
 
-	override suspend fun getImages(tagName: String): RemoteDataResult<List<ImageData>> {
+	override suspend fun getImages(tagName: String): RemoteDataResult<MutableList<ImageData>> {
 		Log.d(logTag, "getImages(\"$tagName\")")
 
 		if (!connectionChecker.isConnection()) {
@@ -38,14 +38,14 @@ class ImageLinksRetrofitDataSource @Inject constructor(
 		}
 	}
 
-	private fun tagItemsDtoToTagList(metaData: MetaData<TagItemsDTO>?): List<ImageData>? {
+	private fun tagItemsDtoToTagList(metaData: MetaData<TagItemsDTO>?): MutableList<ImageData>? {
 		if (metaData?.data == null)
 			return null
 		return metaData.data.items.flatMap { tagItem ->
 			tagItem.images?.map { itemImage ->
 				ImageData(tagItem.title, itemImage.link)
 			} ?: listOf()
-		}
+		}.toMutableList()
 	}
 
 }

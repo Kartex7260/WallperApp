@@ -8,22 +8,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.FavouriteTagsRepository
 import kanti.wallperapp.data.repositories.TagsRepository
-import kanti.wallperapp.domain.OnFavourite
-import kanti.wallperapp.domain.UpdateFavouriteTagsUseCase
 import kanti.wallperapp.viewmodel.uistate.TagsUiState
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
 	private val tagsRepository: TagsRepository,
-	private val favouritesTags: FavouriteTagsRepository,
-	private val updateFavouriteTagsUseCase: UpdateFavouriteTagsUseCase
-) : ViewModel(), OnFavourite<Tag> {
+	private val favouritesTags: FavouriteTagsRepository
+) : ViewModel() {
+
+	val favouriteTagViewModel: FavouriteViewModel<Tag> by lazy {
+		FavouriteTagViewModel(viewModelScope, favouritesTags)
+	}
 
 	private val _tagsLiveData = MutableLiveData<TagsUiState>()
 	val tagsLiveData: LiveData<TagsUiState> = _tagsLiveData
@@ -32,27 +31,18 @@ class MainViewModel @Inject constructor(
 		_tagsLiveData.value = TagsUiState(process = true)
 		viewModelScope.launch {
 			val tags = tagsRepository.getTags()
-			getFavourites(tags.data ?: listOf())
+			syncFavouriteData(tags.data ?: mutableListOf())
 			_tagsLiveData.postValue(TagsUiState(tags))
 		}
 	}
 
-	override fun onFavourite(value: Tag) {
-		viewModelScope.launch {
-			favouritesTags.onFavourite(value)
+	private suspend fun syncFavouriteData(list: MutableList<Tag>) {
+		list.asFlow().collectIndexed { index, tag ->
+			val syncedTag = favouritesTags.syncFavourite(tag)
+			if (syncedTag != null) {
+				list[index] = syncedTag
+			}
 		}
-	}
-
-	fun updateFavouriteTags(coroutineScope: CoroutineScope, tags: List<Tag>): LiveData<Int> {
-		return updateFavouriteTagsUseCase(coroutineScope, tags)
-	}
-
-	private suspend fun getFavourites(list: List<Tag>) {
-		val tagsFlow = list.asFlow()
-		tagsFlow.onEach { tag ->
-			val isFavourite = favouritesTags.isFavourite(tag)
-			tag.favourite = isFavourite
-		}.collect()
 	}
 
 }

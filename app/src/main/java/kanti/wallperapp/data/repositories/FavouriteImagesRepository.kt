@@ -7,19 +7,27 @@ import javax.inject.Singleton
 
 @Singleton
 class FavouriteImagesRepository @Inject constructor(
-	private val favouriteImages: FavouriteImagesLocalDataSource
+	private val favouriteImagesLocal: FavouriteImagesLocalDataSource
 ) {
 
-	suspend fun getAll(): List<ImageData> = favouriteImages.getAll()
+	suspend fun getAll() = favouriteImagesLocal.getAll()
 
-	suspend fun onFavourite(image: ImageData) {
-		if (image.favourite) {
-			favouriteImages.add(image)
+	suspend fun onFavourite(image: ImageData, isFavourite: Boolean): ImageData {
+		if (isFavourite) {
+			favouriteImagesLocal.insert(image)
 		} else {
-			favouriteImages.delete(image)
+			favouriteImagesLocal.delete(image)
 		}
+		return favouriteImagesLocal.get(image)
 	}
 
-	suspend fun isFavourite(image: ImageData) = favouriteImages.isFavourite(image)
+	suspend fun syncFavourite(image: ImageData): ImageData? {
+		val isFavourite = isFavourite(image)
+		if (isFavourite == image.favourite)
+			return null
+		return favouriteImagesLocal.get(image)
+	}
+
+	suspend fun isFavourite(image: ImageData) = favouriteImagesLocal.isFavourite(image)
 
 }

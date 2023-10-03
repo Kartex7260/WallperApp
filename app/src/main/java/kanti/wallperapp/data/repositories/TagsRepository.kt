@@ -11,7 +11,7 @@ class TagsRepository @Inject constructor(
 	private val tagsRemote: TagsRemoteDataSource
 ) {
 
-	suspend fun getTags(): RepositoryResult<List<Tag>> {
+	suspend fun getTags(): RepositoryResult<MutableList<Tag>> {
 		val tags = tagsRemote.getTags()
 		return tags.toRepositoryResult()
 	}

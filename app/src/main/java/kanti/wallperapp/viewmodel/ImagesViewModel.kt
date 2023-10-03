@@ -10,10 +10,9 @@ import kanti.wallperapp.data.model.Tag
 import kanti.wallperapp.data.repositories.FavouriteImagesRepository
 import kanti.wallperapp.data.repositories.FavouriteTagsRepository
 import kanti.wallperapp.data.repositories.ImageDataRepository
-import kanti.wallperapp.domain.OnFavourite
-import kanti.wallperapp.domain.UpdateFavouriteImagesUseCase
 import kanti.wallperapp.viewmodel.uistate.ImagesUiState
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,11 +20,15 @@ import javax.inject.Inject
 class ImagesViewModel @Inject constructor(
 	private val imageDataRepository: ImageDataRepository,
 	private val favouriteImagesRepository: FavouriteImagesRepository,
-	private val favouriteTagsRepository: FavouriteTagsRepository,
-	private val updateFavouriteImagesUseCase: UpdateFavouriteImagesUseCase
-) : ViewModel(), OnFavourite<ImageData> {
+	private val favouriteTagsRepository: FavouriteTagsRepository
+) : ViewModel() {
 
-	private var onFavouriteTagHolder: OnFavourite<Tag>? = null
+	val favouriteTagViewModel: FavouriteViewModel<Tag> by lazy {
+		FavouriteTagViewModel(viewModelScope, favouriteTagsRepository)
+	}
+	val favouriteImageViewModel: FavouriteViewModel<ImageData> by lazy {
+		FavouriteImageViewModel(viewModelScope, favouriteImagesRepository)
+	}
 
 	private val _imagesLinksLiveData: MutableLiveData<ImagesUiState> = MutableLiveData()
 	val imagesLinksLiveData: LiveData<ImagesUiState> = _imagesLinksLiveData
@@ -35,33 +38,18 @@ class ImagesViewModel @Inject constructor(
 
 		viewModelScope.launch {
 			val imagesLinks = imageDataRepository.getImageLinks(tagName)
-			imagesLinks.data?.forEach { image ->
-				image.favourite = favouriteImagesRepository.isFavourite(image)
-			}
+			syncFavourite(imagesLinks.data)
 			_imagesLinksLiveData.postValue(ImagesUiState(imagesLinks))
 		}
 	}
 
-	fun getOnFavouriteTag(): OnFavourite<Tag> {
-		if (onFavouriteTagHolder == null) {
-			onFavouriteTagHolder = object : OnFavourite<Tag> {
-				override fun onFavourite(value: Tag) {
-					viewModelScope.launch {
-						favouriteTagsRepository.onFavourite(value)
-					}
-				}
+	private suspend fun syncFavourite(images: MutableList<ImageData>?) {
+		if (images == null) return
+		images.asFlow().collectIndexed { index, image ->
+			val syncedImage = favouriteImagesRepository.syncFavourite(image)
+			if (syncedImage != null) {
+				images[index] = syncedImage
 			}
-		}
-		return onFavouriteTagHolder!!
-	}
-
-	fun updateFavouriteImages(coroutineScope: CoroutineScope, images: List<ImageData>): LiveData<Int> {
-		return updateFavouriteImagesUseCase(coroutineScope, images)
-	}
-
-	override fun onFavourite(value: ImageData) {
-		viewModelScope.launch {
-			favouriteImagesRepository.onFavourite(value)
 		}
 	}
 

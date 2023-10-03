@@ -7,18 +7,18 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.wallperapp.data.model.ImageData
 import kanti.wallperapp.data.repositories.FavouriteImagesRepository
-import kanti.wallperapp.domain.OnFavourite
-import kanti.wallperapp.domain.UpdateFavouriteImagesUseCase
 import kanti.wallperapp.viewmodel.uistate.FavouriteImagesUiState
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavouriteImagesViewModel @Inject constructor(
-	private val favouriteImages: FavouriteImagesRepository,
-	private val updateFavouriteImagesUseCase: UpdateFavouriteImagesUseCase
-) : ViewModel(), OnFavourite<ImageData> {
+	private val favouriteImages: FavouriteImagesRepository
+) : ViewModel() {
+
+	val favouriteImageViewModel: FavouriteViewModel<ImageData> by lazy {
+		FavouriteImageViewModel(viewModelScope, favouriteImages)
+	}
 
 	private val _favouriteImagesLiveData = MutableLiveData<FavouriteImagesUiState>()
 	val favouriteImagesLiveData: LiveData<FavouriteImagesUiState> = _favouriteImagesLiveData
@@ -30,14 +30,5 @@ class FavouriteImagesViewModel @Inject constructor(
 			_favouriteImagesLiveData.postValue(FavouriteImagesUiState(images))
 		}
 	}
-
-	override fun onFavourite(value: ImageData) {
-		viewModelScope.launch {
-			favouriteImages.onFavourite(value)
-		}
-	}
-
-	fun updateFavouriteImages(coroutineScope: CoroutineScope, images: List<ImageData>) =
-		updateFavouriteImagesUseCase(coroutineScope, images)
 
 }
